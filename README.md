@@ -15,6 +15,7 @@
         <img src="![image](https://github.com/user-attachments/assets/9b688d3b-6afd-4900-9558-32ced0a8266a)
 " alt="AIoTLab Logo" width="180"/>
         <img src="![Uploading image.png…]()
-" alt="DaiNam University Logo" width="200"/>
+" alt="![Uploading image.png…]()
+" width="200"/>
     </p>
 </div>
