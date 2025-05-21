@@ -1,7 +1,7 @@
 <h2 align="center">Ứng dụng Mã hóa và Giải mã Dữ liệu bằng AES</h2>
 
 <p>
-Dự án bao gồm hai ứng dụng web riêng biệt, được xây dựng bằng Python và Flask, nhằm thực hiện việc bảo mật dữ liệu bằng thuật toán AES (Advanced Encryption Standard).
+Dự án được xây dựng bằng Python và Flask, nhằm thực hiện việc bảo mật dữ liệu bằng thuật toán AES (Advanced Encryption Standard).
 </p>
 
 <h3>Chức năng của ứng dụng</h3>
@@ -37,17 +37,16 @@ Dự án bao gồm hai ứng dụng web riêng biệt, được xây dựng bằ
 
 <ol>
   <li>Cài đặt thư viện: <code>pip install flask pycryptodome</code></li>
-  <li>Chạy ứng dụng mã hóa: <code>python encrypt_app.py</code></li>
-  <li>Chạy ứng dụng giải mã: <code>python decrypt_app.py</code></li>
-  <li>Truy cập hai ứng dụng tại hai địa chỉ localhost khác nhau (ví dụ: <code>localhost:5000</code> và <code>localhost:5001</code>)</li>
+  <li>Chạy ứng dụng: <code>python app.py</code></li>
+  <li>Truy cập ứng dụng tại địa chỉ localhost (ví dụ: <code>http://127.0.0.1:5000</code>)</li>
 </ol>
 
 <h3>Giao diện ứng dụng</h3>
 
-<p><strong>Giao diện ứng dụng mã hóa:</strong></p>
+<p><strong>Giao diện ứng dụng sử dụng thuật toán AES:</strong></p>
 <p align="center">
   <img src="https://github.com/YeNhi22/FT4012_ATBMMT/blob/main/AES.png?raw=true" alt="Giao diện mã hóa" width="600">
 </p>
 
 
-<p><strong>Tác giả:</strong> Nguyễn Vũ Yến Nhi - Khoa Công nghệ thông tin, Đại học Đại Nam</p>
+<p> Nguyễn Vũ Yến Nhi - Khoa Công nghệ thông tin, Đại học Đại Nam</p>
