@@ -46,7 +46,7 @@ Dự án bao gồm hai ứng dụng web riêng biệt, được xây dựng bằ
 
 <p><strong>Giao diện ứng dụng mã hóa:</strong></p>
 <p align="center">
-  <img src="https://github.com/hiepnguyen05/ThuatToanAES/blob/main/screenshots/encrypt_interface.png?raw=true" alt="Giao diện mã hóa" width="600">
+  <img src="[https://github.com/hiepnguyen05/ThuatToanAES/blob/main/screenshots/encrypt_interface.png?raw=true](https://github.com/YeNhi22/FT4012_ATBMMT/blob/main/AES.png?raw=true)" alt="Giao diện mã hóa" width="600">
 </p>
 
 
