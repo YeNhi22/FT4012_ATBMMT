@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Secure Chat - Nhắn tin An toàn</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            height: 600px;
+            display: flex;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Login Screen */
+        .login-screen {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #f1bbc3 0%, #fc9ffc 100%);
+        }
+
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            min-width: 350px;
+        }
+
+        .login-form h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Chat Interface */
+        .chat-interface {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(180deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .user-info h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .online-status {
+            color: #28a745;
+            font-size: 14px;
+        }
+
+        .users-list {
+            flex-grow: 1;
+        }
+
+        .users-list h4 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-item {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .chat-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(180deg, #c5fcc3 0%, #93fec7 100%);
+        }
+
+        .chat-header {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chat-header h3 {
+            color: #333;
+            font-size: 20px;
+        }
+
+        .messages-container {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message.own {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            position: relative;
+        }
+
+        .message:not(.own) .message-content {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.own .message-content {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-header {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            opacity: 0.8;
+        }
+
+        .message-text {
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input {
+            flex-grow: 1;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .message-input:focus {
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .error-message {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .encryption-note {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #155724;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .sidebar {
+                width: 250px;
+            }
+            
+            .login-form {
+                min-width: 300px;
+                padding: 30px;
+            }
+        }
+
+        /* Scrollbar styling */
+        .messages-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 3px;
+        }
+
+        .messages-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div class="login-screen" id="loginScreen">
+            <div class="login-form">
+                <h2>🔐 Secure Chat</h2>
+                <div class="form-group">
+                    <label for="username">👤 Tên người dùng:</label>
+                    <input type="text" id="username" placeholder="Nhập tên của bạn..." required>
+                </div>
+                <div class="form-group">
+                    <label for="encryptionKey">🔑 Khóa mã hóa:</label>
+                    <input type="password" id="encryptionKey" placeholder="Nhập khóa bí mật..." required>
+                </div>
+                <button class="login-btn" onclick="login()">🚀 Tham gia Chat</button>
+                <div class="encryption-note">
+                    🔒 Tin nhắn của bạn được mã hóa AES-256. Chỉ những người có cùng khóa mới có thể đọc được!
+                </div>
+                <div id="errorMessage"></div>
+            </div>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="chat-interface" id="chatInterface">
+            <div class="sidebar">
+                <div class="user-info">
+                    <h3 id="currentUser">👤 User</h3>
+                    <div class="online-status">🟢 Đang online</div>
+                </div>
+                <div class="users-list">
+                    <h4>👥 Người dùng online (<span id="userCount">0</span>)</h4>
+                    <div id="usersList"></div>
+                </div>
+            </div>
+            
+            <div class="chat-area">
+                <div class="chat-header">
+                    <h3>💬 Phòng chat an toàn</h3>
+                </div>
+                
+                <div class="messages-container" id="messagesContainer">
+                    <!-- Messages will appear here -->
+                </div>
+                
+                <div class="input-area">
+                    <textarea 
+                        class="message-input" 
+                        id="messageInput" 
+                        placeholder="Nhập tin nhắn của bạn..."
+                        rows="1"
+                        onkeypress="handleKeyPress(event)"
+                    ></textarea>
+                    <button class="send-btn" onclick="sendMessage()">
+                        ➤
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let websocket = null;
+        let currentUsername = '';
+
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const encryptionKey = document.getElementById('encryptionKey').value.trim();
+            
+            if (!username || !encryptionKey) {
+                showError('Vui lòng nhập đầy đủ thông tin!');
+                return;
+            }
+
+            // Kết nối WebSocket
+            websocket = new WebSocket('ws://localhost:8765');
+            
+            websocket.onopen = function() {
+                // Gửi thông tin đăng nhập
+                websocket.send(JSON.stringify({
+                    type: 'login',
+                    username: username,
+                    encryption_key: encryptionKey
+                }));
+            };
+
+            websocket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                handleServerMessage(data);
+            };
+
+            websocket.onclose = function() {
+                showError('Mất kết nối với server!');
+            };
+
+            websocket.onerror = function() {
+                showError('Không thể kết nối tới server! Hãy chắc chắn server đang chạy.');
+            };
+        }
+
+        function handleServerMessage(data) {
+            switch(data.type) {
+                case 'login_success':
+                    currentUsername = data.username;
+                    document.getElementById('currentUser').textContent = `👤 ${currentUsername}`;
+                    showChatInterface();
+                    break;
+                    
+                case 'error':
+                    showError(data.message);
+                    break;
+                    
+                case 'user_list':
+                    updateUsersList(data.users);
+                    break;
+                    
+                case 'message':
+                    displayMessage(data.username, data.message, data.timestamp);
+                    break;
+            }
+        }
+
+        function showChatInterface() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('chatInterface').style.display = 'flex';
+        }
+
+        function updateUsersList(users) {
+            const usersList = document.getElementById('usersList');
+            const userCount = document.getElementById('userCount');
+            
+            usersList.innerHTML = '';
+            userCount.textContent = users.length;
+            
+            users.forEach(user => {
+                const userItem = document.createElement('div');
+                userItem.className = 'user-item';
+                userItem.innerHTML = `
+                    <div class="user-avatar">${user[0].toUpperCase()}</div>
+                    <span>${user}</span>
+                `;
+                usersList.appendChild(userItem);
+            });
+        }
+
+        function displayMessage(username, message, timestamp) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            const isOwnMessage = username === currentUsername;
+            
+            messageDiv.className = `message ${isOwnMessage ? 'own' : ''}`;
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    ${!isOwnMessage ? `<div class="message-header">${username}</div>` : ''}
+                    <div class="message-text">${escapeHtml(message)}</div>
+                    <div class="message-time">${timestamp}</div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (!message || !websocket) return;
+            
+            websocket.send(JSON.stringify({
+                type: 'message',
+                message: message
+            }));
+            
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.innerHTML = `<div class="error-message">${message}</div>`;
+            setTimeout(() => {
+                errorDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Auto-resize textarea
+        document.getElementById('messageInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+
+        // Focus vào ô nhập tin nhắn khi nhấn phím bất kỳ
+        document.addEventListener('keydown', function(event) {
+            if (document.getElementById('chatInterface').style.display === 'flex') {
+                const messageInput = document.getElementById('messageInput');
+                if (document.activeElement !== messageInput && 
+                    event.key.length === 1 && 
+                    !event.ctrlKey && 
+                    !event.altKey) {
+                    messageInput.focus();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
