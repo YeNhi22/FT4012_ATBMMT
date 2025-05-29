@@ -60,4 +60,4 @@ Dự án được phát triển bằng Python và Flask framework, ứng dụng 
   <li>Hiển thị nội dung gốc cho người dùng B</li>
 </ol>
 
-<p>Nguyễn Vũ Yến Nhi - Khoa Công nghệ thông tin, Đại học Đại Nam</p>
+
