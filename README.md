@@ -1,4 +1,4 @@
-<h2 align="center">Ứng dụng Mã hóa và Giải mã Dữ liệu bằng AES</h2>
+<h2 align="center">Ứng dụng Nhắn tin an toàn trên Web sử dụng thuật toán AES</h2>
 
 <p>
 Dự án được xây dựng bằng Python và Flask, nhằm thực hiện việc bảo mật dữ liệu bằng thuật toán AES (Advanced Encryption Standard).
