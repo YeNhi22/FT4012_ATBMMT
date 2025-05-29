@@ -63,7 +63,9 @@ Dự án được xây dựng bằng Python và WebSocket, cung cấp giải ph�
 </ol>
 
 <p align="center">
-  <img src="https://github.com/YeNhi22/FT4012_ATBMMT/blob/main/AES.png?raw=true" alt="Giao diện chat bảo mật" width="600">
+  <img src="https://github.com/YeNhi22/FT4012_ATBMMT/blob/main/Screenshot%202025-05-29%20231333.png" alt="Giao diện chat bảo mật" width="600">
 </p>
-
+<p align="center">
+  <img src="https://github.com/YeNhi22/FT4012_ATBMMT/blob/main/Screenshot%202025-05-29%20231333.png" alt="Giao diện chat bảo mật" width="600">
+</p>
 <p>Nguyễn Vũ Yến Nhi - Khoa Công nghệ thông tin, Đại học Đại Nam</p>
