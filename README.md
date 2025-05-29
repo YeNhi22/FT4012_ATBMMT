@@ -49,7 +49,7 @@ Dự án được phát triển bằng Python và Flask framework, ứng dụng 
   <img src="https://github.com/YeNhi22/FT4012_ATBMMT/blob/main/Screenshot%202025-05-29%20231333.png" alt="Giao diện chat bảo mật" width="600">
 </p>
 <p align="center">
-  <img src="" alt="Giao diện chat bảo mật" width="600">
+  <img src="https://github.com/YeNhi22/FT4012_ATBMMT/blob/main/Screenshot%202025-05-29%20231648.png" alt="Giao diện chat bảo mật" width="600">
 </p>
 
 <p><strong>Quy trình hoạt động:</strong></p>
