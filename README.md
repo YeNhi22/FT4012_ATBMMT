@@ -21,13 +21,6 @@ Dự án được phát triển bằng Python và Flask framework, ứng dụng 
       <li>Hỗ trợ nhập khóa thủ công khi cần</li>
     </ul>
   </li>
-  <li><strong>Tính năng bổ sung:</strong>
-    <ul>
-      <li>Lịch sử tin nhắn được mã hóa</li>
-      <li>Giao diện trực quan, dễ sử dụng</li>
-      <li>Bảo mật đầu cuối (end-to-end encryption)</li>
-    </ul>
-  </li>
 </ul>
 
 <h3>Công nghệ sử dụng</h3>
@@ -35,7 +28,7 @@ Dự án được phát triển bằng Python và Flask framework, ứng dụng 
 <ul>
   <li>Ngôn ngữ lập trình: Python 3</li>
   <li>Web framework: Flask</li>
-  <li>Giao diện: HTML5, CSS3, JavaScript</li>
+  <li>Giao diện: HTML, CSS</li>
   <li>Thuật toán mã hóa: AES-256-CBC</li>
   <li>Thư viện bảo mật: PyCryptodome</li>
 </ul>
@@ -43,9 +36,9 @@ Dự án được phát triển bằng Python và Flask framework, ứng dụng 
 <h3>Hướng dẫn triển khai</h3>
 
 <ol>
-  <li>Cài đặt môi trường: <code>pip install flask pycryptodome</code></li>
-  <li>Khởi chạy server: <code>python app.py</code></li>
-  <li>Truy cập ứng dụng qua trình duyệt: <code>http://localhost:5000</code></li>
+  <li>Cài đặt thư viện: <code>pip install websockets cryptography</code></li>
+  <li>Khởi chạy server: <code>python server.py</code></li>
+  <li>Truy cập ứng dụng:: <code>Click đúp vào file HTML</code></li>
   <li>Đăng ký tài khoản và bắt đầu nhắn tin bảo mật</li>
 </ol>
 
@@ -53,7 +46,7 @@ Dự án được phát triển bằng Python và Flask framework, ứng dụng 
 
 <p><strong>Trang chủ ứng dụng nhắn tin bảo mật:</strong></p>
 <p align="center">
-  <img src="https://github.com/YeNhi22/FT4012_ATBMMT/blob/main/AES.png?raw=true" alt="Giao diện chat bảo mật" width="600">
+  <img src="" alt="Giao diện chat bảo mật" width="600">
 </p>
 
 <p><strong>Quy trình hoạt động:</strong></p>
