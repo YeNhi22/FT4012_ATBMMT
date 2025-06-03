@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truyền File An Toàn AES</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 1200px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            padding: 30px;
+            text-align: center;
+            color: #4a4a4a;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .server-config {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .server-input {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        .server-input input {
+            padding: 10px 15px;
+            border: 2px solid #fff;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 200px;
+        }
+
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            padding: 30px;
+            background: #f8f9ff;
+        }
+
+        .mode-btn {
+            padding: 15px 30px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .mode-btn.sender {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #8b4513;
+        }
+
+        .mode-btn.receiver {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #2c5aa0;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .mode-btn.active {
+            transform: scale(1.05);
+        }
+
+        .app-content {
+            padding: 40px;
+            min-height: 500px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 1rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 20px;
+            border: 3px dashed #cbd5e0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        }
+
+        .file-upload-label:hover {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #a0aec0;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin: 10px 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: #2d3748;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #fed7aa 0%, #fbb6ce 100%);
+            color: #744210;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+            color: #2f855a;
+        }
+
+        .status.error {
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            color: #c53030;
+        }
+
+        .status.info {
+            background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%);
+            color: #2c5282;
+        }
+
+        .status.warning {
+            background: linear-gradient(135deg, #faf089 0%, #f6e05e 100%);
+            color: #744210;
+        }
+
+        .file-info {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .connection-status.connected {
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+            color: #2f855a;
+        }
+
+        .connection-status.disconnected {
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            color: #c53030;
+        }
+
+        .connection-status.connecting {
+            background: linear-gradient(135deg, #bee3f8 0%, #90cdf4 100%);
+            color: #2c5282;
+        }
+
+        .textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .room-info {
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .room-code {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c5282;
+            margin: 10px 0;
+            letter-spacing: 2px;
+        }
+
+        .waiting-area {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .mode-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .mode-btn {
+                margin: 5px 0;
+                width: 200px;
+            }
+
+            .server-input input {
+                width: 150px;
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Truyền File An Toàn</h1>
+            <p>Hệ thống mã hóa AES với WebSocket Real-time</p>
+        </div>
+        
+        <div class="server-config">
+            <div class="server-input">
+                <label>🌐 Server:</label>
+                <input type="text" id="serverUrl" value="ws://localhost:8080" placeholder="ws://your-server.com">
+            </div>
+            <div class="server-input">
+                <label>🏠 Room ID:</label>
+                <input type="text" id="roomId" placeholder="Nhập hoặc tự tạo">
+            </div>
+            <button class="btn btn-primary" onclick="connectToRoom()">🔌 Kết nối phòng</button>
+        </div>
+        
+        <div class="mode-selector">
+            <button class="mode-btn sender active" onclick="switchMode('sender')">
+                📤 Bên Gửi (A)
+            </button>
+            <button class="mode-btn receiver" onclick="switchMode('receiver')">
+                📥 Bên Nhận (B)
+            </button>
+        </div>
+
+        <div class="connection-status disconnected" id="connectionStatus">
+            ❌ Chưa kết nối
+        </div>
+
+        <div class="app-content">
+            <!-- Thông tin phòng -->
+            <div id="roomInfo" style="display: none;">
+                <div class="room-info">
+                    <h3>🏠 Phòng kết nối</h3>
+                    <div class="room-code" id="displayRoomId"></div>
+                    <p>Chia sẻ Room ID này cho người nhận</p>
+                </div>
+            </div>
+
+            <!-- Giao diện bên gửi -->
+            <div id="senderInterface">
+                <div class="input-group">
+                    <label for="encryptionKey">🔑 Mã khóa mã hóa:</label>
+                    <input type="password" id="encryptionKey" class="input-field" 
+                           placeholder="Nhập mã khóa bảo mật (độ dài tự do)">
+                </div>
+
+                <div class="input-group">
+                    <label for="messageText">💬 Tin nhắn (tùy chọn):</label>
+                    <textarea id="messageText" class="input-field textarea" 
+                              placeholder="Nhập tin nhắn cần gửi kèm..."></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>📁 Chọn file để gửi:</label>
+                    <div class="file-upload">
+                        <input type="file" id="fileInput" multiple>
+                        <label for="fileInput" class="file-upload-label">
+                            <div class="file-upload-icon">📎</div>
+                            <div>Kéo thả file vào đây hoặc click để chọn</div>
+                            <div style="font-size: 0.9rem; color: #718096; margin-top: 5px;">
+                                Hỗ trợ nhiều file cùng lúc
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="selectedFiles"></div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-primary" id="sendBtn" onclick="sendFiles()" disabled>
+                        🚀 Gửi File An Toàn
+                    </button>
+                </div>
+            </div>
+
+            <!-- Giao diện bên nhận -->
+            <div id="receiverInterface" style="display: none;">
+                <div class="input-group">
+                    <label for="decryptionKey">🔓 Mã khóa giải mã:</label>
+                    <input type="password" id="decryptionKey" class="input-field" 
+                           placeholder="Nhập mã khóa để giải mã">
+                </div>
+
+                <div class="waiting-area" id="waitingArea">
+                    <div class="pulse">📡</div>
+                    <h3>Đang chờ nhận dữ liệu...</h3>
+                    <p>Vui lòng đảm bảo đã kết nối đến cùng phòng với bên gửi</p>
+                </div>
+
+                <div id="receivedContent"></div>
+            </div>
+
+            <div id="statusArea"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        let ws = null;
+        let currentMode = 'sender';
+        let currentRoom = null;
+        let isConnected = false;
+
+        // Chuyển đổi giữa chế độ gửi và nhận
+        function switchMode(mode) {
+            currentMode = mode;
+            
+            // Cập nhật nút active
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.mode-btn.${mode}`).classList.add('active');
+            
+            // Hiển thị giao diện tương ứng
+            if (mode === 'sender') {
+                document.getElementById('senderInterface').style.display = 'block';
+                document.getElementById('receiverInterface').style.display = 'none';
+            } else {
+                document.getElementById('senderInterface').style.display = 'none';
+                document.getElementById('receiverInterface').style.display = 'block';
+            }
+            
+            updateUI();
+        }
+
+        // Kết nối đến phòng
+        function connectToRoom() {
+    const serverUrl = document.getElementById('serverUrl').value;
+    let roomId = document.getElementById('roomId').value;
+    
+    if (!serverUrl) {
+        showStatus('❌ Vui lòng nhập địa chỉ server!', 'error');
+        return;
+    }
+    
+    if (!roomId) {
+        roomId = generateRoomId();
+        document.getElementById('roomId').value = roomId;
+    }
+    
+    currentRoom = roomId;
+    
+    try {
+        updateConnectionStatus('connecting');
+        showStatus('🔄 Đang kết nối đến server...', 'info');
+        
+        // Thêm tham số room và role vào URL
+        const wsUrl = new URL(serverUrl);
+        wsUrl.searchParams.append('room', roomId);
+        wsUrl.searchParams.append('role', currentMode);
+        
+        ws = new WebSocket(wsUrl.toString());
+        
+        ws.onopen = function() {
+            isConnected = true;
+            updateConnectionStatus('connected');
+            showStatus('✅ Đã kết nối thành công!', 'success');
+            showRoomInfo();
+            updateUI();
+        };
+        
+        ws.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                // Bỏ qua kiểm tra room và type khi dùng server echo
+                if (currentMode === 'receiver') {
+                    displayReceivedData(data.payload || data);
+                }
+            } catch (error) {
+                console.log('Received non-JSON message:', event.data);
+            }
+        };
+                
+                ws.onclose = function() {
+                    isConnected = false;
+                    updateConnectionStatus('disconnected');
+                    showStatus('🔴 Kết nối đã đóng', 'warning');
+                    hideRoomInfo();
+                    updateUI();
+                };
+                
+                ws.onerror = function(error) {
+                    isConnected = false;
+                    updateConnectionStatus('disconnected');
+                    showStatus('❌ Lỗi kết nối WebSocket. Thử server khác hoặc tạo server riêng.', 'error');
+                    console.error('WebSocket error:', error);
+                };
+                
+            } catch (error) {
+                updateConnectionStatus('disconnected');
+                showStatus('❌ Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Xử lý tin nhắn nhận được
+        function handleIncomingMessage(data) {
+            if (data.type === 'file_transfer' && data.room === currentRoom) {
+                if (currentMode === 'receiver') {
+                    displayReceivedData(data.payload);
+                    showStatus('📬 Đã nhận được dữ liệu mã hóa!', 'success');
+                }
+            }
+            else if (data.type === 'join_success') {
+                showStatus(`🏠 Đã tham gia phòng: ${data.room}`, 'success');
+            }
+            else if (data.type === 'user_joined') {
+                showStatus(`👥 Có người vào phòng (${data.role})`, 'info');
+            }
+        }
+
+        // Tạo Room ID ngẫu nhiên
+        function generateRoomId() {
+            return Math.random().toString(36).substr(2, 8).toUpperCase();
+        }
+
+        // Hiển thị thông tin phòng
+        function showRoomInfo() {
+            document.getElementById('roomInfo').style.display = 'block';
+            document.getElementById('displayRoomId').textContent = currentRoom;
+        }
+
+        // Ẩn thông tin phòng
+        function hideRoomInfo() {
+            document.getElementById('roomInfo').style.display = 'none';
+        }
+
+        // Cập nhật UI theo trạng thái
+        function updateUI() {
+            const sendBtn = document.getElementById('sendBtn');
+            const waitingArea = document.getElementById('waitingArea');
+            
+            if (currentMode === 'sender') {
+                sendBtn.disabled = !isConnected;
+            } else {
+                if (waitingArea) {
+                    waitingArea.style.display = isConnected ? 'block' : 'none';
+                }
+            }
+        }
+
+        // Cập nhật trạng thái kết nối
+        function updateConnectionStatus(status) {
+            const statusEl = document.getElementById('connectionStatus');
+            statusEl.className = `connection-status ${status}`;
+            
+            switch(status) {
+                case 'connected':
+                    statusEl.textContent = '✅ Đã kết nối';
+                    break;
+                case 'connecting':
+                    statusEl.textContent = '🔄 Đang kết nối';
+                    break;
+                default:
+                    statusEl.textContent = '❌ Chưa kết nối';
+            }
+        }
+
+        // Hiển thị thông báo trạng thái
+        function showStatus(message, type) {
+            const statusArea = document.getElementById('statusArea');
+            const statusEl = document.createElement('div');
+            statusEl.className = `status ${type}`;
+            statusEl.textContent = message;
+            statusArea.appendChild(statusEl);
+            
+            // Tự động xóa sau 10 giây
+            setTimeout(() => {
+                if (statusEl.parentNode) {
+                    statusEl.parentNode.removeChild(statusEl);
+                }
+            }, 10000);
+        }
+
+        // Xử lý chọn file
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            displaySelectedFiles(Array.from(e.target.files));
+        });
+
+        // Hiển thị file đã chọn
+        function displaySelectedFiles(files) {
+            const container = document.getElementById('selectedFiles');
+            container.innerHTML = '';
+            
+            files.forEach((file, index) => {
+                const fileInfo = document.createElement('div');
+                fileInfo.className = 'file-info';
+                fileInfo.innerHTML = `
+                    <strong>📄 ${file.name}</strong><br>
+                    <small>Kích thước: ${formatFileSize(file.size)} | Loại: ${file.type || 'Không xác định'}</small>
+                `;
+                container.appendChild(fileInfo);
+            });
+        }
+
+        // Định dạng kích thước file
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Mã hóa AES
+        function encryptAES(data, key) {
+            try {
+                const keyHash = CryptoJS.SHA256(key).toString();
+                const encrypted = CryptoJS.AES.encrypt(data, keyHash).toString();
+                return encrypted;
+            } catch (error) {
+                throw new Error('Lỗi mã hóa: ' + error.message);
+            }
+        }
+
+        // Giải mã AES
+        function decryptAES(encryptedData, key) {
+            try {
+                const keyHash = CryptoJS.SHA256(key).toString();
+                const decrypted = CryptoJS.AES.decrypt(encryptedData, keyHash);
+                const result = decrypted.toString(CryptoJS.enc.Utf8);
+                if (!result) {
+                    throw new Error('Mã khóa không đúng');
+                }
+                return result;
+            } catch (error) {
+                throw new Error('Lỗi giải mã: Mã khóa không đúng hoặc dữ liệu bị lỗi');
+            }
+        }
+
+        // Chuyển file thành base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Gửi file
+        async function sendFiles() {
+            const key = document.getElementById('encryptionKey').value;
+            const message = document.getElementById('messageText').value;
+            const files = document.getElementById('fileInput').files;
+            
+            if (!key) {
+                showStatus('❌ Vui lòng nhập mã khóa mã hóa!', 'error');
+                return;
+            }
+            
+            if (!ws || !isConnected) {
+                showStatus('❌ Vui lòng kết nối server trước!', 'error');
+                return;
+            }
+            
+            if (files.length === 0 && !message) {
+                showStatus('❌ Vui lòng chọn file hoặc nhập tin nhắn!', 'error');
+                return;
+            }
+
+            try {
+                showStatus('🔄 Đang mã hóa và gửi dữ liệu...', 'info');
+                
+                const dataToSend = {
+                    message: message,
+                    files: [],
+                    timestamp: Date.now()
+                };
+
+                // Xử lý từng file
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    showStatus(`📝 Đang xử lý file: ${file.name}...`, 'info');
+                    
+                    const base64Data = await fileToBase64(file);
+                    const encryptedData = encryptAES(base64Data, key);
+                    
+                    dataToSend.files.push({
+                        name: file.name,
+                        type: file.type,
+                        size: file.size,
+                        data: encryptedData
+                    });
+                }
+
+                // Mã hóa tin nhắn nếu có
+                if (message) {
+                    dataToSend.message = encryptAES(message, key);
+                }
+
+                // Gửi qua WebSocket
+                const transferMessage = {
+                    type: 'file_transfer',
+                    room: currentRoom,
+                    payload: dataToSend,
+                    sender: 'A'
+                };
+
+                ws.send(JSON.stringify(transferMessage));
+                showStatus('✅ Đã gửi thành công! Dữ liệu đã được mã hóa AES.', 'success');
+                
+            } catch (error) {
+                showStatus('❌ Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        // Hiển thị dữ liệu nhận được
+        function displayReceivedData(encryptedData) {
+            const container = document.getElementById('receivedContent');
+            document.getElementById('waitingArea').style.display = 'none';
+            
+            container.innerHTML = `
+                <div class="status success">
+                    📬 Đã nhận được dữ liệu mã hóa từ bên gửi!
+                </div>
+                <div style="text-align: center; margin: 20px 0;">
+                    <button class="btn btn-primary" onclick="decryptReceivedData()">
+                        🔓 Giải Mã Dữ Liệu
+                    </button>
+                </div>
+                <div id="decryptedContent"></div>
+            `;
+
+            // Lưu dữ liệu tạm thời
+            window.receivedEncryptedData = encryptedData;
+        }
+
+        // Giải mã dữ liệu nhận được
+        function decryptReceivedData() {
+    const key = document.getElementById('decryptionKey').value;
+    if (!key) {
+        showStatus('❌ Vui lòng nhập mã khóa giải mã!', 'error');
+        return;
+    }
+
+    if (!window.receivedEncryptedData) {
+        showStatus('❌ Không có dữ liệu để giải mã!', 'error');
+        return;
+    }
+
+    try {
+        const encryptedData = window.receivedEncryptedData;
+        const container = document.getElementById('decryptedContent');
+        container.innerHTML = '<div class="status info">🔄 Đang giải mã...</div>';
+
+        // Giải mã tin nhắn (nếu có)
+        let decryptedMessage = '';
+        if (encryptedData.message) {
+            try {
+                decryptedMessage = decryptAES(encryptedData.message, key);
+            } catch (e) {
+                console.error('Lỗi giải mã tin nhắn:', e);
+            }
+        }
+
+        // Giải mã file (nếu có)
+        let filesContent = '';
+        if (encryptedData.files && encryptedData.files.length > 0) {
+            filesContent = '<div style="margin-top: 20px;"><strong>📁 Các file đã nhận:</strong></div>';
+            
+            encryptedData.files.forEach((file, index) => {
+                try {
+                    const decryptedData = decryptAES(file.data, key);
+                    const downloadUrl = 'data:' + (file.type || 'application/octet-stream') + ';base64,' + decryptedData;
+                    
+                    filesContent += `
+                        <div class="file-info">
+                            <strong>📄 ${file.name}</strong><br>
+                            <small>Kích thước: ${formatFileSize(file.size)} | Loại: ${file.type || 'Không xác định'}</small>
+                            <div style="margin-top: 10px;">
+                                <a href="${downloadUrl}" download="${file.name}" class="btn btn-success">
+                                    ⬇️ Tải xuống
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                } catch (e) {
+                    console.error(`Lỗi giải mã file ${file.name}:`, e);
+                    filesContent += `
+                        <div class="file-info error">
+                            ❌ Lỗi giải mã file: ${file.name}<br>
+                            <small>${e.message}</small>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // Hiển thị kết quả
+        let content = '<div class="status success">✅ Giải mã thành công!</div>';
+        if (decryptedMessage) {
+            content += `
+                <div class="file-info">
+                    <strong>💬 Tin nhắn:</strong><br>
+                    <div style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.7); border-radius: 8px;">
+                        ${decryptedMessage}
+                    </div>
+                </div>
+            `;
+        }
+        content += filesContent;
+
+        container.innerHTML = content;
+        showStatus('✅ Giải mã thành công!', 'success');
+
+    } catch (error) {
+        showStatus('❌ Lỗi giải mã: ' + error.message, 'error');
+        console.error('Decryption error:', error);
+        document.getElementById('decryptedContent').innerHTML = `
+            <div class="status error">
+                ❌ Lỗi giải mã nghiêm trọng<br>
+                <small>${error.message}</small>
+            </div>
+        `;
+    }
+}
+
+        // Kéo thả file
+        function setupDragAndDrop() {
+            const dropArea = document.querySelector('.file-upload-label');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropArea.style.borderColor = '#667eea';
+                dropArea.style.backgroundColor = '#e6fffa';
+            }
+            
+            function unhighlight() {
+                dropArea.style.borderColor = '#cbd5e0';
+                dropArea.style.backgroundColor = '#f7fafc';
+            }
+            
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                document.getElementById('fileInput').files = files;
+                displaySelectedFiles(Array.from(files));
+            }
+        }
+
+        // Khởi tạo khi trang tải xong
+        window.onload = function() {
+            setupDragAndDrop();
+            updateUI();
+        };
+    </script>
+</body>
+</html>
